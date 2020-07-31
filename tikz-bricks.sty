@@ -1,0 +1,130 @@
+%% -----------------------------------------------------------------------------
+%% Version: 1.0
+%% Author:  Florian Sihler, 31.07.2020
+%%
+%% This LaTeX2e package provides a set of commands to draw bricks with tikz
+%% 
+%%                      ulm university, SoSe2020
+
+
+%% Development notes:
+%%    All internal commands and registers will be prefixed with 'tb@
+%%
+
+% Required packages
+\RequirePackage{tikz}
+\usetikzlibrary{calc,3d,shapes}
+
+
+%% buffer implementation
+%% -----------------------------------------------------------------------------
+
+\def\contructBuffer#1{%
+    \expandafter\def\csname tb@buf@#1\endcsname{}
+    \expandafter\def\csname get#1\endcsname{%
+        \xdef\tb@current@buffer{\csname tb@buf@#1\endcsname}%
+    }%
+    \expandafter\def\csname store#1\endcsname##1{%
+        \expandafter\xdef\csname ##1\endcsname{\csname tb@buf@#1\endcsname}%
+    }%
+}
+
+\def\pushBuffer#1#2{%
+    \expandafter\xdef\csname tb@buf@lst@#1\endcsname{\csname tb@buf@#1\endcsname}%
+    \ifthenelse{\equal{\csname tb@buf@#1\endcsname}{}}{% empty
+        \expandafter\xdef\csname tb@buf@#1\endcsname{\csname tb@buf@lst@#1\endcsname{#2}}%
+    }{% Not empty
+        \expandafter\xdef\csname tb@buf@#1\endcsname{\csname tb@buf@lst@#1\endcsname,{#2}}%
+    }%
+}
+
+\def\setList#1#2{%
+    \expandafter\xdef\csname tb@buf@lst@#1\endcsname{#2}
+}
+
+%% buffer handling
+%% -----------------------------------------------------------------------------
+
+% will create the buffer if and only if it does not exist already
+\def\assertBuffer#1{%
+    \@ifundefined{tb@buf@#1}{\constructBuffer{#1}}{}%
+}
+
+\newif\iftb@dobuffer@
+\tb@dobuffer@false
+
+\def\printBuffer#1{%
+    \csname getcolorBuffer#1\endcsname\relax
+    \foreach \pos/\col/\lst in \tb@current@buffer {
+        \foreach \x/\y in \lst {
+            \node[cylinder,draw,fill=\col,shape border rotate=130,text width=150\p,aspect =.3, scale=0.5] at ($(\pos)+(2.5\p+\x*5\p-5\p,6\p,-3\p-\y*5\p+5\p)$) {};%-\i/25
+        }
+    }
+    \setList{colorBuffer#1}{}% clear
+    \gdef\tb@current@buffer{}
+}
+
+%% the basic brick
+%% -----------------------------------------------------------------------------
+
+\newlength\tb@brk@u@wd \setlength\tb@brk@u@wd{0.2pt} % maybe: 1.6mm
+\def\tb@brk@u@hd{1.2025} % "height" mltplr
+\let\h\tb@brk@u@hd
+
+% #1 at; #2 color; #3: width (\tb@brk@u@wd+3\tb@brk@u@wd+\tb@brk@u@wd), #4: depth (20\tb@brk@u@wd), #5 count caps x, #6 count caps y, #7 foreground cheats :D
+\def\BrickGeneric#1#2#3#4#5#6#7{
+    % front -| ++(-1\tb@brk@u@wd,1\tb@brk@u@wd,0) -| ++(-3\tb@brk@u@wd,-1\tb@brk@u@wd,0)
+    \draw[fill=#2] (#1) -| ++(#3,6\tb@brk@u@wd,0) -| cycle;
+    % 3d back
+    \draw[fill=#2] (#1)++(#3,0,0) -- ++(0,0,-#4) |- ++(-#3,6\tb@brk@u@wd,0) -- ++(0,0,#4) -- ++(#3,0,0) -- ++(0,-6\tb@brk@u@wd,0);
+    % strut line
+    \draw (#1)++(#3,6\tb@brk@u@wd,0) -- ++(0,0,-#4);
+    % caps
+    \foreach \x in {#5,...,1} {
+        \foreach \y in {#6,...,1} {
+            \node[cylinder,draw,fill=#2,shape border rotate=130,text width=150\tb@brk@u@wd,aspect =.3, scale=0.5] at ($(#1)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%-\i/25
+        }
+    }
+    \iftb@dobuffer@
+        \assertBuffer{colorBuffer\BufferC}
+        \edef\tmpXContainer{\noexpand\pushBuffer{colorBuffer\BufferC}{#1/#2/{#7}}}\tmpXContainer%
+    \else
+        \begin{pgfonlayer}{tb@brick@layer@foreground}
+            \foreach \x/\y in {#7} {
+                \node[cylinder,draw,fill=#2,shape border rotate=130,text width=150\tb@brk@u@wd,aspect =.3, scale=0.5] at ($(#1)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%-\i/25
+            }
+        \end{pgfonlayer}
+    \fi
+}
+
+%% brick collection
+%% -----------------------------------------------------------------------------
+
+% #2 at; #3 color
+% [cheats] :D
+\newcommand*\BrickOneXFour[3][] {\BrickGeneric{#2}{#3} {5\tb@brk@u@wd}{20\tb@brk@u@wd} {1}{4}{#1}}
+\newcommand*\BrickFourXOne[3][] {\BrickGeneric{#2}{#3}{20\tb@brk@u@wd} {5\tb@brk@u@wd} {4}{1}{#1}}
+\newcommand*\BrickTenXOne[3][]  {\BrickGeneric{#2}{#3}{50\tb@brk@u@wd} {5\tb@brk@u@wd}{10}{1}{#1}}
+\newcommand*\BrickThreeXOne[3][]{\BrickGeneric{#2}{#3}{15\tb@brk@u@wd} {5\tb@brk@u@wd} {3}{1}{#1}}
+\newcommand*\BrickThreeXTwo[3][]{\BrickGeneric{#2}{#3}{15\tb@brk@u@wd}{10\tb@brk@u@wd} {3}{2}{#1}}
+\newcommand*\BrickTenXTwo[3][]  {\BrickGeneric{#2}{#3}{50\tb@brk@u@wd}{10\tb@brk@u@wd}{10}{2}{#1}}
+\newcommand*\BrickTwoXFour[3][] {\BrickGeneric{#2}{#3}{10\tb@brk@u@wd}{20\tb@brk@u@wd} {2}{4}{#1}}
+\newcommand*\BrickFourXTwo[3][] {\BrickGeneric{#2}{#3}{20\tb@brk@u@wd}{10\tb@brk@u@wd} {4}{2}{#1}}
+\newcommand*\BrickSixXTwo[3][]  {\BrickGeneric{#2}{#3}{30\tb@brk@u@wd}{10\tb@brk@u@wd} {6}{2}{#1}}
+\newcommand*\BrickTwoXThree[3][]{\BrickGeneric{#2}{#3}{10\tb@brk@u@wd}{15\tb@brk@u@wd} {2}{3}{#1}}
+\newcommand*\BrickSixXOne[3][]  {\BrickGeneric{#2}{#3}{30\tb@brk@u@wd} {5\tb@brk@u@wd} {6}{1}{#1}}
+\newcommand*\BrickTwoXTwo[3][]  {\BrickGeneric{#2}{#3}{10\tb@brk@u@wd}{10\tb@brk@u@wd} {2}{2}{#1}}
+\newcommand*\BrickOneXTwo[3][]  {\BrickGeneric{#2}{#3} {5\tb@brk@u@wd}{10\tb@brk@u@wd} {1}{2}{#1}}
+\newcommand*\BrickTwoXOne[3][]  {\BrickGeneric{#2}{#3}{10\tb@brk@u@wd} {5\tb@brk@u@wd} {2}{1}{#1}}
+\newcommand*\BrickOneXOne[3][]  {\BrickGeneric{#2}{#3} {5\tb@brk@u@wd} {5\tb@brk@u@wd} {1}{1}{#1}}
+\newcommand*\BrickOneXSix[3][]  {\BrickGeneric{#2}{#3} {5\tb@brk@u@wd}{30\tb@brk@u@wd} {1}{6}{#1}}
+
+%% brick setup
+%% -----------------------------------------------------------------------------
+
+\def\BrickSetup{%
+    \pgfdeclarelayer{tb@brick@layer@foreground}%
+    \pgfsetlayers{main,tb@brick@layer@foreground}%
+}
+
+\endinput
