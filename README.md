@@ -2,8 +2,4 @@
 
 # tikz-bricks
 
-A simple latex-library that allows you to typeset bricks (this is the variant without the letter-definitions).
-
-Example:
-
-![example.png](example.png)
+A simple latex-library that allows you to typeset bricks (this is the variant without the letter-definitions, they are included partially in [titleimage-is.tex](titleimage-is.tex)).
