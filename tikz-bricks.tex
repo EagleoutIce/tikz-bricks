@@ -17,4 +17,41 @@ Hier ein Beispiel:\bigskip
 
     \BrickTwoXFour{2,\h,3}{green!85!teal}
 \end{tikzpicture}
+
+Eine weitere Demo:
+
+\resizebox{\linewidth}{!}{\begin{tikzpicture}[line join=round]
+    \BrickSetup
+\BrickOneXFour{-1,0,0}{teal}
+\BrickOneXFour{-1,0,4}{teal}
+\BrickOneXFour{-1,0,8}{teal}
+\BrickOneXFour{-1,0,12}{teal}
+
+\BrickOneXFour{0,0,0}{red}
+
+\BrickOneXFour{3,0,0}{green}
+\BrickOneXFour{0,1.2025,0}{green}
+\BrickOneXFour{1,1.2025,0}{red}
+\BrickOneXFour{2,1.2025,0}{green}
+\BrickOneXFour{3,1.2025,0}{red}
+\BrickOneXFour{1,0,4}{green}
+\BrickOneXFour{2,0,4}{red}
+\BrickFourXOne{0,0,9}{orange}
+\BrickFourXOne{0,0,10}{orange}
+\BrickFourXOne{0,0,11}{orange}
+\BrickFourXOne{0,0,12}{orange}
+\BrickFourXOne{0,2*1.2025,0}{orange}
+
+\foreach \xyi in {0,4,8,12} {
+    \BrickOneXFour{4,0,\xyi}{teal}
+}
+\BrickOneXFour{0,1.2025,12}{green}
+
+\BrickTwoXFour{11,1.2025,12}{green}
+\BrickOneXFour{11,2*1.2025,12}{red}
+\BrickOneXFour{12,2*1.2025,12}{teal}
+
+\BrickTwoXTwo{12,2*1.2025,5}{blue!50!white}
+\BrickFourXOne{-5,2*1.2025,12}{red}
+\end{tikzpicture}}
 \end{document}
