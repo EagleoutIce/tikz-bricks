@@ -3,3 +3,10 @@
 # tikz-bricks
 
 A simple latex-library that allows you to typeset bricks (this is the variant without the letter-definitions, they are included partially in [titleimage-is.tex](titleimage-is.tex)).
+
+Currently, there is no documentation, but there are several examples:
+
+* [example.tex](example.tex), see [here](https://media.githubusercontent.com/media/EagleoutIce/tikz-bricks/gh-pages/example.pdf) or [here](https://github.com/EagleoutIce/tikz-bricks/blob/gh-pages/example.pdf).
+* [tikz-bricks.tex](tikz-bricks.tex), see [here](https://media.githubusercontent.com/media/EagleoutIce/tikz-bricks/gh-pages/tikz-bricks.pdf) or [here](https://github.com/EagleoutIce/tikz-bricks/blob/gh-pages/tikz-bricks.pdf).
+* [titleimage-is.tex](titleimage-is.tex), see [here](https://media.githubusercontent.com/media/EagleoutIce/tikz-bricks/gh-pages/titleimage-is.pdf) or [here](https://github.com/EagleoutIce/tikz-bricks/blob/gh-pages/titleimage-is.pdf).
+
