@@ -1,0 +1,17 @@
+% used for the preview
+\documentclass{article}
+\usepackage{tikz-bricks}
+\usepackage[active,tightpage]{preview}
+
+\begin{document}
+\begin{preview}\begin{brickpicture}
+    \BrickSixXTwo[5/1,6/1]{0,0,0}{cyan}
+    \BrickSixXTwo{0,0,2}{orange}
+    \BrickSixXTwo[3/1,4/1]{0,0,4}{cyan}
+
+    \BrickOneXSix[1/5]{6,0,4}{purple!65!black}
+    \BrickFourXOne{3,\h,-1}{yellow!35!brown}
+
+    \BrickTwoXFour{2,\h,3}{green!85!teal!76!lime!80!black}
+\end{brickpicture}\end{preview}
+\end{document}
