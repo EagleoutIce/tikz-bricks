@@ -10,3 +10,5 @@ Currently, there is no documentation, but there are several examples:
 * [tikz-bricks.tex](tikz-bricks.tex), see [here](https://media.githubusercontent.com/media/EagleoutIce/tikz-bricks/gh-pages/tikz-bricks.pdf) or [here](https://github.com/EagleoutIce/tikz-bricks/blob/gh-pages/tikz-bricks.pdf).
 * [titleimage-is.tex](titleimage-is.tex), see [here](https://media.githubusercontent.com/media/EagleoutIce/tikz-bricks/gh-pages/titleimage-is.pdf) or [here](https://github.com/EagleoutIce/tikz-bricks/blob/gh-pages/titleimage-is.pdf).
 
+An Example:\
+[<img src="https://github.com/EagleoutIce/tikz-bricks/blob/gh-pages/example-1.png?raw=true" width="500"/>](titleimage-is.tex)
