@@ -10,25 +10,16 @@
 \usetikzlibrary{calc,3d,shapes.geometric}
 
 %% buffer implementation
-\def\constructBuffer#1{%
-    \expandafter\def\csname tb@buf@#1\endcsname{}
-    \expandafter\def\csname get#1\endcsname{%
-        \xdef\tb@current@buffer{\csname tb@buf@#1\endcsname}%
-    }%
-    \expandafter\def\csname store#1\endcsname##1{%
-        \expandafter\xdef\csname ##1\endcsname{\csname tb@buf@#1\endcsname}%
-    }%
-}
+\def\constructBuffer#1{\expandafter\def\csname tb@buf@#1\endcsname{}}
 
 \def\pushBuffer#1#2{%
-    \expandafter\xdef\csname tb@buf@lst@#1\endcsname{\csname tb@buf@#1\endcsname}%
     \expandafter\ifx\expandafter!\csname tb@buf@#1\endcsname!% empty
-        \expandafter\xdef\csname tb@buf@#1\endcsname{\csname tb@buf@lst@#1\endcsname{#2}}%
+        \expandafter\xdef\csname tb@buf@#1\endcsname{{#2}}%
     \else% Not empty
         \expandafter\g@addto@macro\csname tb@buf@#1\endcsname{,{#2}}%
-    \fi%
+    \fi
 }
-\def\setList#1#2{\expandafter\xdef\csname tb@buf@lst@#1\endcsname{#2}}
+\def\setList#1#2{\expandafter\xdef\csname tb@buf@#1\endcsname{#2}}
 
 %% buffer handling
 % will create the buffer if and only if it does not exist already
@@ -38,14 +29,14 @@
 \tb@dobuffer@false
 
 \def\printBuffer#1{%
-    \csname getcolorBuffer#1\endcsname\relax
-    \foreach \pos/\col/\lst in \tb@current@buffer {
+    \edef\@tmp{\csname tb@buf@colorBuffer#1\endcsname}%
+    \foreach \pos/\col/\lst in \@tmp {
         \foreach \x/\y in \lst {
-            \node[cylinder,draw,fill=\col,shape border rotate=130,text width=150\tb@brk@u@wd,aspect =.3, scale=.5] at ($(\pos)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
+            \node[tb@capstyle=\col] at ($(\pos)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
         }
     }
     \setList{colorBuffer#1}{}% clear
-    \gdef\tb@current@buffer{}
+    \gdef\tb@current@buffer{}%
 }
 
 %% the basic brick
@@ -102,8 +93,8 @@
 \def\BrickSetup{%
     \pgfdeclarelayer{tb@brick@layer@foreground}%
     \pgfsetlayers{main,tb@brick@layer@foreground}%
-    \let\dobuffertrue\tb@dobuffer@true
-    \let\dobufferfalse\tb@dobuffer@false
+    \def\dobuffertrue{\tb@dobuffer@true}
+    \def\dobufferfalse{\tb@dobuffer@false}
 }
 
 \newenvironment{brickpicture}[1][]{\begin{tikzpicture}[line join=round,#1]\BrickSetup}{\end{tikzpicture}}
