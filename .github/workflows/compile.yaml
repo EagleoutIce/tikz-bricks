@@ -4,38 +4,36 @@ name: Compile examples
     branches:
     - master
     - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout git repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
-        lfs: true
-        submodules: true
-    - name: Setup Python environment for sltx
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
-    - name: Setup and run sltx-install (and pu)
-      run: |
-        sudo apt install poppler-utils
-        pip install sltx
-        echo "tx-default" | sltx docker
+        submodules: recursive
     - name: Compile the Documents
+      uses: xu-cheng/latex-action@v3
+      with:
+        root_file: |
+          tikz-bricks.tex
+          titleimage-is.tex
+          example.tex
+    - name: Render the preview
       run: |
-        sltx compile --root --profile "tx-default" "tikz-bricks.tex" "titleimage-is.tex" "example.tex"
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends poppler-utils
         pdftoppm -png -f 1 -l 1 ./titleimage-is.pdf example
-    - name: Commit
+    - name: Publish to gh-pages
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        sudo chown -R "$(id -u):$(id -g)" .
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add -f "tikz-bricks.pdf" "titleimage-is.pdf" "example.pdf" "example-1.png"
         git commit -m "Newly compiled data"
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        branch: gh-pages
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        force: true
+        git push --force origin HEAD:gh-pages

@@ -32,7 +32,7 @@
     \edef\@tmp{\csname tb@buf@colorBuffer#1\endcsname}%
     \foreach \pos/\col/\lst in \@tmp {
         \foreach \x/\y in \lst {
-            \node[tb@capstyle=\col] at ($(\pos)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
+            \node[tb@capstyle=\col] at ($(\pos)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-2.5\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
         }
     }
     \setList{colorBuffer#1}{}% clear
@@ -41,7 +41,7 @@
 
 %% the basic brick
 \newlength\tb@brk@u@wd \tb@brk@u@wd=.2pt % maybe: 1.6mm
-\def\tb@brk@u@hd{1.2025} % "height" mltplr
+\def\tb@brk@u@hd{1.2} % "height" mltplr, matches the 6\tb@brk@u@wd body height
 \let\h\tb@brk@u@hd
 
 \tikzset{tb@capstyle/.style={cylinder,cylinder uses custom fill, cylinder end fill=#1,cylinder body fill=#1!95!black,fill=none,draw,shape border rotate=130,text width=150\tb@brk@u@wd,aspect=.3,scale=.5}}
@@ -55,7 +55,7 @@
 % caps
 \foreach \x in {#5,...,1} {
     \foreach \y in {#6,...,1} {
-        \node[tb@capstyle=#2] at ($(#1)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
+        \node[tb@capstyle=#2] at ($(#1)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-2.5\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
     }
 }
 \iftb@dobuffer@
@@ -64,7 +64,7 @@
 \else
     \begin{pgfonlayer}{tb@brick@layer@foreground}
         \foreach \x/\y in {#7} {
-            \node[tb@capstyle=#2] at ($(#1)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-3\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
+            \node[tb@capstyle=#2] at ($(#1)+(2.5\tb@brk@u@wd+\x*5\tb@brk@u@wd-5\tb@brk@u@wd,6\tb@brk@u@wd,-2.5\tb@brk@u@wd-\y*5\tb@brk@u@wd+5\tb@brk@u@wd)$) {};%
         }
     \end{pgfonlayer}
 \fi}
